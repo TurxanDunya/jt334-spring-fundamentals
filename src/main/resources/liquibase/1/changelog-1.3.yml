@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert_data_to_users_table
+      author: Turkhan Dunyamaliyev
+      changes:
+        - sql: |
+            INSERT INTO users (name, surname, age) VALUES ('John', 'Test', 23);
+            INSERT INTO users (name, surname, age) VALUES ('Jack', 'Test2', 23);

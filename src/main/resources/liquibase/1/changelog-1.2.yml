@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: change_length_of_name_in_books_table
+      author: Turkhan Dunyamaliyev
+      changes:
+        - modifyDataType:
+            tableName: books
+            columnName: name
+            newDataType: varchar(50)
