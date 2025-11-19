@@ -3,9 +3,9 @@ spring:
     name: texnoera
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://my-postgres:5432/student_db
     username: postgres
-    password: admin
+    password: postgres
     hikari:
       minimum-idle: 3
       maximum-pool-size: 6
@@ -25,6 +25,7 @@ spring:
 
 server:
   port: 8080
+  address: 0.0.0.0
 
 application:
   whitelist:
