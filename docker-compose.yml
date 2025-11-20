@@ -1,6 +1,6 @@
 services:
   td-spring:
-    image: td-spring
+    image: td-spring:6
     container_name: td-spring-app-compose
     build:
       context: .
@@ -24,7 +24,7 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
     volumes:
-      - db_data_named:/var/lib/postgresql
+      - ./db_data:/var/lib/postgresql
 
 networks:
   td-network:
