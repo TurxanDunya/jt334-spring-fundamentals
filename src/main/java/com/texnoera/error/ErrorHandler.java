@@ -5,6 +5,7 @@ import com.texnoera.error.model.ErrorResponse;
 import com.texnoera.error.model.FieldErrorResponse;
 import com.texnoera.error.model.FieldValidationError;
 import lombok.NonNull;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -18,15 +19,23 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
 @RestControllerAdvice
 public class ErrorHandler extends ResponseEntityExceptionHandler {
 
+    private final MessageSource messageSource;
+
+    public ErrorHandler(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex, Locale locale) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage()));
+                .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(),
+                        messageSource.getMessage("user.not.found", null, locale)));
     }
 
     @Override

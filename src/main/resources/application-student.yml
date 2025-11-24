@@ -1,6 +1,9 @@
 spring:
   application:
     name: texnoera
+  messages:
+    encoding: UTF-8
+    basename: i18n/messages
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
