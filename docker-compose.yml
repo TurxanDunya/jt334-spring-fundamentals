@@ -1,0 +1,31 @@
+services:
+  td-spring:
+    image: td-spring:6
+    container_name: td-spring-app-compose
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+      - "8090:8080"
+    networks:
+      - td-network
+#    environment:
+#      DB_HOST: db
+#      DB_NAME: student_db
+#      DB_USER: postgres
+#      DB_PASS: 123456Aa
+
+  db:
+    image: postgres
+    networks:
+      - td-network
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./db_data:/var/lib/postgresql
+
+networks:
+  td-network:
+    external: true

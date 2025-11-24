@@ -6,9 +6,9 @@ spring:
     basename: i18n/messages
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://db:5432/student_db
     username: postgres
-    password: admin
+    password: postgres
     hikari:
       minimum-idle: 3
       maximum-pool-size: 6
