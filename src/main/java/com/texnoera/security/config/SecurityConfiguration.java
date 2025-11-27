@@ -1,12 +1,13 @@
 package com.texnoera.security.config;
 
+import com.texnoera.security.filter.JwtTokenVerifierFilter;
+import com.texnoera.security.filter.JwtUsernameAndPasswordAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,8 +16,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static com.texnoera.security.model.enums.UserRole.ADMIN;
-import static com.texnoera.security.model.enums.UserRole.USER;
+import static com.texnoera.security.model.enums.UserPermission.READ_USERS;
+import static com.texnoera.security.model.enums.UserPermission.WRITE_USERS;
 
 @Configuration
 @EnableWebSecurity
@@ -31,15 +32,15 @@ public class SecurityConfiguration {
                                                    AuthenticationConfiguration authConfig) throws Exception {
         AuthenticationManager authenticationManager = authConfig.getAuthenticationManager();
 
-        http.authorizeHttpRequests(
-                        auth -> auth
-                                .requestMatchers(HttpMethod.GET, "/users/**").hasAnyRole(USER.name(), ADMIN.name())
-                                .requestMatchers(HttpMethod.POST, "/users/**").hasRole(ADMIN.name())
-                                .anyRequest().authenticated())
+        http.authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.GET, "/users").hasAnyAuthority(READ_USERS.getPermission())
+                        .requestMatchers(HttpMethod.POST, "/users").hasAnyAuthority(WRITE_USERS.getPermission())
+                        .anyRequest().authenticated())
                 .authenticationManager(authenticationManager)
                 .authenticationProvider(daoAuthenticationProvider())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .httpBasic(Customizer.withDefaults())
+                .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager))
+                .addFilterBefore(new JwtTokenVerifierFilter(), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }

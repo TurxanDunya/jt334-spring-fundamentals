@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_users_table
+      author: Turkhan Dunyamaliyev
+      changes:
+        - createTable:
+            tableName: application_users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValue: now()
+                  constraints:
+                    nullable: false
+            remarks: Table to store users data

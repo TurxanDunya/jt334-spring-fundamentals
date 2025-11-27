@@ -12,5 +12,4 @@ public enum UserPermission {
 
     private final String permission;
 
-
 }
