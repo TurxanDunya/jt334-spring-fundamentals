@@ -29,6 +29,8 @@ public class UserDto implements Serializable {
     @NotNull(message = "age can not be null")
     private Integer age;
     private UserStatus status;
+
+    private String cardNumber;
     private LocalDateTime createdAt;
     private BookDto book;
 

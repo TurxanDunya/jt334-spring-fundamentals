@@ -32,10 +32,7 @@ public class SecurityConfiguration {
                                                    AuthenticationConfiguration authConfig) throws Exception {
         AuthenticationManager authenticationManager = authConfig.getAuthenticationManager();
 
-        http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/users").hasAnyAuthority(READ_USERS.getPermission())
-                        .requestMatchers(HttpMethod.POST, "/users").hasAnyAuthority(WRITE_USERS.getPermission())
-                        .anyRequest().authenticated())
+        http.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .authenticationManager(authenticationManager)
                 .authenticationProvider(daoAuthenticationProvider())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

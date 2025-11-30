@@ -1,5 +1,7 @@
 package com.texnoera.error;
 
+import com.texnoera.error.exceptions.CardNotFoundException;
+import com.texnoera.error.exceptions.InternalErrorException;
 import com.texnoera.error.exceptions.UserNotFoundException;
 import com.texnoera.error.model.ErrorResponse;
 import com.texnoera.error.model.FieldErrorResponse;
@@ -36,6 +38,22 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(),
                         messageSource.getMessage("user.not.found", null, locale)));
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(CardNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCardNotFoundException(CardNotFoundException ex, Locale locale) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(),
+                        messageSource.getMessage("card.not.found", null, locale)));
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(InternalErrorException.class)
+    public ResponseEntity<ErrorResponse> handleCardNotFoundException(InternalErrorException ex, Locale locale) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        messageSource.getMessage("unknown.error", null, locale)));
     }
 
     @Override

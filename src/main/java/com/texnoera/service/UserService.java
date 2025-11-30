@@ -1,5 +1,8 @@
 package com.texnoera.service;
 
+import com.texnoera.client.CardClient;
+import com.texnoera.client.CardFeignClient;
+import com.texnoera.client.model.CardDto;
 import com.texnoera.dao.UserCacheRepository;
 import com.texnoera.dao.UserRepository;
 import com.texnoera.dao.entity.User;
@@ -29,12 +32,21 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserCacheRepository userCacheRepository;
+    private final CardClient cardClient;
+    private final CardFeignClient cardFeignClient;
 
     public List<UserDto> getUsers(UserFilter filter) {
         log.debug("Getting users with filter: {}", filter);
-        return userRepository.findAll(new UserSpecification(filter)).stream()
+        List<UserDto> userDtoList = userRepository.findAll(new UserSpecification(filter)).stream()
                 .map(UserMapper.INSTANCE::toUserDto)
                 .toList();
+
+        for (UserDto userDto : userDtoList) {
+            CardDto cardDto = cardFeignClient.getCardById(userDto.getId());
+            userDto.setCardNumber(cardDto.getPan());
+        }
+
+        return userDtoList;
     }
 
     public User getByName(String name) {
