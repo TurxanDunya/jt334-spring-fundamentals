@@ -1,0 +1,50 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: gw-public
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+  cloud:
+    gateway:
+      httpclient:
+        connect-timeout: 1000
+        response-timeout: 5000
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods: "*"
+      routes:
+        - id: api-card
+          uri: http://localhost:8080
+          predicates:
+            - Path=/api/v1/cards/**
+          filters:
+            - StripPrefix=2
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1 # Requests per second
+                redis-rate-limiter.burstCapacity: 60 # Max requests allowed in a burst
+                redis-rate-limiter.requestedTokens: 60 # Tokens consumed per request
+                key-resolver: '#{@userKeyResolver}'
+        - id: bff-mobile
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/v1/mobile/**
+          filters:
+            - StripPrefix=2
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: [ "env", "health", "info", "refresh" ]
+
+logging:
+  level:
+    ROOT: INFO
+    az.texnoera.gateway: DEBUG

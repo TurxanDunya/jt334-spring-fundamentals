@@ -6,7 +6,7 @@ WORKDIR /app/
 
 #RUN apk add --no-cache gradle
 
-COPY build/libs/lesson32-0.0.1-SNAPSHOT.jar ./
+COPY build/libs/jt334-spring-fundamentals-0.0.1-SNAPSHOT.jar ./
 
 RUN echo $SOME_KEY
 

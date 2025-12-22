@@ -1,0 +1,9 @@
+@Library('jenkins-libs') _
+
+env.GRADLE_CMD='./gradlew build -x test -Pjenkins -Pprofiles=$APP_PROFILE --no-daemon && ./gradlew test -Pjenkins -Pprofiles=$APP_PROFILE --no-daemon'
+env.PROJECT_KEY="bir-be"
+env.K8S_ZONE="birbank_k8s"
+env.K8S_NS="birbank-backend"
+env.DEBUG_MODE='#'
+
+jarvis()

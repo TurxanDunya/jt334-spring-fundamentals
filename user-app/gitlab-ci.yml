@@ -1,0 +1,45 @@
+stages:
+  - build
+  - test
+
+default:
+  image: gradle:jdk21-corretto
+
+build:
+  stage: build
+  script:
+    - echo "Building gradle project..."
+    - ./gradlew build -x test
+  artifacts:
+    paths:
+      - build/libs/**
+
+test:
+  stage: test
+  script:
+    - echo "Running gradle test..."
+    - ./gradlew test
+    - echo "Test ran successfully"
+  allow_failure: true
+
+docker-build:
+  stage: build
+  needs:
+    - build
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - exists:
+        - Dockerfile
+  tags:
+    - private-linux-docker-amd64
+  image: docker
+  before_script:
+    - pwd
+    - ls
+  script:
+    - echo "Building docker image..."
+    - docker build -t azimazizov/$CI_PROJECT_NAME .
+    - echo "Image built successfully"
+    - echo "Pushing to docker hub"
+    - docker push azimazizov/$CI_PROJECT_NAME
+    - echo "Successfully pushed to docker hub"

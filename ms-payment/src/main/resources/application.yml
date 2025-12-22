@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: ms-payment
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      PaymentClientCB:
+        registerHealthIndicator: true
+        failure-rate-threshold: 1
+        minimum-number-of-calls: 1
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 1
+        wait-duration-in-open-state: 5s
+        permitted-number-of-calls-in-half-open-state: 1
+        automatic-transition-from-open-to-half-open-enabled: true
+  thread-pool-bulkhead:
+    configs:
+      default:
+        maxThreadPoolSize: 5
+        coreThreadPoolSize: 2
+        queueCapacity: 20
+    instances:
+      PaymentClientBH: # Specific thread pool for an external API
+        maxThreadPoolSize: 1
+        coreThreadPoolSize: 1
+        queueCapacity: 0
