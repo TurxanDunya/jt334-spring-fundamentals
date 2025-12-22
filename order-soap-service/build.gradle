@@ -1,0 +1,75 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.6'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.texnoera'
+version = '0.0.1-SNAPSHOT'
+description = 'order-soap-service'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+// Create a custom configuration for XJC compiler
+configurations {
+    xjc
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web-services'
+
+    // JAXB runtime
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:4.0.0"
+    implementation "org.glassfish.jaxb:jaxb-runtime:4.0.2"
+    implementation 'com.sun.xml.ws:jaxws-ri:4.0.1'
+
+    // XJC compiler dependencies (add to custom configuration)
+    xjc "org.glassfish.jaxb:jaxb-xjc:4.0.2"
+    xjc "org.glassfish.jaxb:jaxb-core:4.0.2"
+
+    implementation 'wsdl4j:wsdl4j:1.6.3'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.register("generateJaxb", JavaExec) {
+    group = "build"
+    description = "Generate JAXB classes from XSD"
+
+    classpath = configurations.xjc
+    mainClass.set("com.sun.tools.xjc.XJCFacade")
+
+    // Ensure output directory exists
+    doFirst {
+        file("$buildDir/generated-sources/xjc").mkdirs()
+    }
+
+    args = [
+            "-d", "$buildDir/generated-sources/xjc",
+            "-p", "com.texnoera.ordersoapservice",
+            "src/main/resources/order.xsd"
+    ]
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir("$buildDir/generated-sources/xjc")
+        }
+    }
+}
+
+tasks.named("test") {
+    useJUnitPlatform()
+}

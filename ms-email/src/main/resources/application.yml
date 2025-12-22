@@ -1,0 +1,21 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: texnoera
+  messages:
+    encoding: UTF-8
+    basename: i18n/messages
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    listener:
+      simple:
+        acknowledge-mode: manual
+
+rabbitmq:
+  queue:
+    user_created: user_queue

@@ -1,0 +1,66 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.0.0'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.texnoera'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webservices'
+
+    // CXF runtime
+    implementation 'org.apache.cxf:cxf-rt-frontend-jaxws:4.0.3'
+    implementation 'org.apache.cxf:cxf-rt-transports-http:4.0.3'
+
+    // JAXB (Java 21)
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+    runtimeOnly 'org.glassfish.jaxb:jaxb-runtime:4.0.0'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-webservices-test'
+}
+
+// CXF codegen configuration
+configurations {
+    cxfCodegen
+}
+
+dependencies {
+    cxfCodegen 'org.apache.cxf:cxf-tools-wsdlto-core:4.0.3'
+    cxfCodegen 'org.apache.cxf:cxf-tools-wsdlto-frontend-jaxws:4.0.3'
+    cxfCodegen 'org.apache.cxf:cxf-tools-wsdlto-databinding-jaxb:4.0.3'
+}
+
+// ? JavaExec task for WSDL -> Java
+task wsdl2java(type: JavaExec) {
+    group = "build"
+    description = "Generate Java classes from WSDL using Apache CXF"
+
+    classpath = configurations.cxfCodegen
+    mainClass.set("org.apache.cxf.tools.wsdlto.WSDLToJava")
+
+    args = [
+            "-d", "src/main/java",  // output directory
+            "-p", "com.texnoera.orderssoapclient.ws",   // package
+            "src/main/resources/wsdl/orders.wsdl"       // WSDL file
+    ]
+}
+
+// Add generated sources to compilation
+sourceSets.main.java.srcDir("${buildDir}/generated-sources/wsdl")
+compileJava.dependsOn(wsdl2java)
