@@ -15,7 +15,31 @@ spring:
     listener:
       simple:
         acknowledge-mode: manual
+  kafka:
+    consumer:
+      auto-offset-reset: latest
+      max-poll-records: 3
+      heartbeat-interval: 3000
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        max.poll.interval.ms: 1200000
+        request.timeout.ms: 300000
+        session.timeout.ms: 600000
+        spring.json.type.mapping: "UserCreatedEvent:com.texnoera.msemail.messaging.event.UserCreatedEvent"
+      client-id: texnoera
 
 rabbitmq:
   queue:
     user_created: user_queue
+
+kafka:
+  consumer-group: jt334
+  retry-delay: 10000 # 10 second
+  topics:
+    user_creation:
+      name: user_creation
+      partitions: 3
+      replicas: 1
+      min-in-sync-replicas: 1

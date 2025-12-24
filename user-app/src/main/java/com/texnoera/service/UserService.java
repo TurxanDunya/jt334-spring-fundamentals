@@ -9,8 +9,9 @@ import com.texnoera.dao.entity.User;
 import com.texnoera.dto.UserDto;
 import com.texnoera.error.exceptions.UserNotFoundException;
 import com.texnoera.mapper.UserMapper;
+import com.texnoera.messaging.kafka.KafkaProducer;
 import com.texnoera.messaging.rabbit.UserPublisher;
-import com.texnoera.messaging.rabbit.event.UserCreatedEvent;
+import com.texnoera.messaging.event.UserCreatedEvent;
 import com.texnoera.model.UserFilter;
 import com.texnoera.specification.UserSpecification;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+
+import static com.texnoera.config.properties.KafkaConstants.USER_CREATION_TOPIC;
 
 @Slf4j
 @Service
@@ -37,6 +40,7 @@ public class UserService {
     private final CardClient cardClient;
     private final CardFeignClient cardFeignClient;
     private final UserPublisher userPublisher;
+    private final KafkaProducer kafkaProducer;
 
     public List<UserDto> getUsers(UserFilter filter) {
         log.debug("Getting users with filter: {}", filter);
@@ -82,7 +86,10 @@ public class UserService {
                 .build();
 
         userRepository.save(UserMapper.INSTANCE.toUserAdd(userDto));
-        userPublisher.send(userCreatedEvent);
+        //userPublisher.send(userCreatedEvent);
+        kafkaProducer.send(USER_CREATION_TOPIC,
+                userCreatedEvent,
+                KafkaProducer.MessageType.USER_CREATION);
         log.info("Added user: {}", userDto);
     }
 

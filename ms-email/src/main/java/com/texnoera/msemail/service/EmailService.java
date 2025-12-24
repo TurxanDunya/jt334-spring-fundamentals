@@ -1,7 +1,7 @@
 package com.texnoera.msemail.service;
 
 import com.texnoera.msemail.messaging.event.UserCreatedEvent;
-import com.texnoera.msemail.messaging.publisher.UserDlqPublisher;
+import com.texnoera.msemail.messaging.rabbit.publisher.UserDlqPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

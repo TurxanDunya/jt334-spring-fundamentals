@@ -1,4 +1,4 @@
-package com.texnoera.msemail.messaging.listener;
+package com.texnoera.msemail.messaging.rabbit.listener;
 
 import com.texnoera.msemail.messaging.event.UserCreatedEvent;
 import com.texnoera.msemail.service.EmailService;

@@ -24,6 +24,18 @@ spring:
     port: 5672
     username: guest
     password: guest
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      acks: "all"
+      batch-size: 1
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      compression-type: "lz4"
+      retries: 0
+      client-id: texnoera
+      properties:
+        spring.json.type.mapping: "UserCreatedEvent:com.texnoera.messaging.event.UserCreatedEvent"
   jpa:
     show-sql: true
     open-in-view: true
@@ -51,6 +63,14 @@ cache:
   redis:
     user:
       ttl: 10 #seconds
+
+kafka:
+  topics:
+    user_creation:
+      name: user_creation
+      partitions: 3
+      replicas: 1
+      min-in-sync-replicas: 1
 
 client:
   card:

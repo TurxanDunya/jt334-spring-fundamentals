@@ -1,4 +1,4 @@
-package com.texnoera.msemail.messaging.publisher;
+package com.texnoera.msemail.messaging.rabbit.publisher;
 
 import com.texnoera.msemail.config.RabbitConfig;
 import com.texnoera.msemail.messaging.event.UserCreatedEvent;

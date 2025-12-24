@@ -1,4 +1,4 @@
-package com.texnoera.messaging.rabbit.event;
+package com.texnoera.messaging.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
