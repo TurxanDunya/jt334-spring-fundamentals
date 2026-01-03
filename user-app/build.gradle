@@ -33,6 +33,7 @@ dependencyManagement {
 
 dependencies {
 	// spring
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -41,8 +42,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 
+	// message brokers
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	implementation 'org.springframework.kafka:spring-kafka'
+
+	// monitoring
+	implementation("io.micrometer:micrometer-registry-prometheus:1.16.1")
 
 	// db
 	implementation 'org.liquibase:liquibase-core:4.24.0'
